@@ -1,0 +1,1669 @@
+{
+    "name": "Etsy Automation Workflow",
+    "flow": [
+        {
+            "id": 30,
+            "module": "openai-gpt-3:askAnything",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "model": "gpt-5-nano",
+                "textPrompt": "You are an expert Etsy digital product designer specializing in MINIMAL LUXURY aesthetics (black, gold, cream). Generate a TRENDING premium digital planner for Etsy.\n\nReturn ONLY valid JSON. Start with { end with }. NO markdown, NO ```json, NO explanation.\n\n{\n  \"title\": \"Premium Etsy listing title with SEO keywords, luxury tone (max 140 chars, use & max once)\",\n  \"description\": \"Compelling 200+ word Etsy description with bullet points emphasizing premium quality and luxury aesthetic\",\n  \"preview_prompts\": [\n    \"elegant flat lay of black and gold hardcover planner on cream marble surface, gold pen beside it, soft diffused natural light, minimal luxury editorial photography, 8k\",\n    \"close-up of open planner showing gold foil headers on cream pages, fine-tip gold pen writing, bokeh background, luxury stationery photography\",\n    \"aerial view of planner spread open with dried pampas grass, cream candle, gold paperclip, linen fabric background, flat lay lifestyle photography\",\n    \"black planner with gold embossed cover on white desk, MacBook in background, morning light, minimal luxury workspace aesthetic\",\n    \"planner pages detail showing elegant serif typography, gold divider lines, cream paper texture, macro photography\",\n    \"hand holding open planner showing weekly spread, gold ring on finger, cream cashmere sleeve, soft afternoon light\",\n    \"planner closed with gold ribbon bookmark, beside espresso cup on marble coaster, luxury lifestyle flat lay\"\n  ],\n  \"interior_pages\": [\n    {\n      \"page_name\": \"Page name here\",\n      \"html_content\": \"complete HTML here\"\n    }\n  ]\n}\n\nINTERIOR PAGES HTML RULES \u2014 CRITICAL:\nEach html_content must have RICH, DETAILED content using ONLY these CSS classes (already defined in template):\n\nAVAILABLE CLASSES:\nbox = bordered section container\nbox-title = dark header with gold text  \nbox-body = content area inside box\nline = writing line (replaces underscores)\ncheck = checkbox row container\ncheckbox = styled gold square checkbox\ncols = two-column grid layout\ncol = single column inside cols\nptable = styled data table\nsubhead = gold uppercase label\ntag = gold bordered label\n\nEXAMPLE OF GOOD html_content:\n<div class=\"box\"><div class=\"box-title\">MORNING INTENTIONS</div><div class=\"box-body\"><div class=\"subhead\">Today I Intend To</div><div class=\"line\"></div><div class=\"line\"></div><div class=\"line\"></div><div class=\"subhead\">One Priority</div><div class=\"line\"></div><div class=\"subhead\">Mood Check</div><div class=\"cols\"><div class=\"col\"><div class=\"check\"><span class=\"checkbox\"></span> Energised</div><div class=\"check\"><span class=\"checkbox\"></span> Calm</div><div class=\"check\"><span class=\"checkbox\"></span> Focused</div></div><div class=\"col\"><div class=\"check\"><span class=\"checkbox\"></span> Anxious</div><div class=\"check\"><span class=\"checkbox\"></span> Tired</div><div class=\"check\"><span class=\"checkbox\"></span> Grateful</div></div></div></div></div><div class=\"box\"><div class=\"box-title\">GRATITUDE</div><div class=\"box-body\"><div class=\"subhead\">Three Things I Appreciate</div><div class=\"line\"></div><div class=\"line\"></div><div class=\"line\"></div></div></div>\n\nRULES:\n- interior_pages: EXACTLY 10 items\n- preview_prompts: EXACTLY 7 items  \n- Each html_content: minimum 4 boxes with real content (lines, checkboxes, tables)\n- NEVER use \u25a1 symbol \u2014 use <div class=\"check\"><span class=\"checkbox\"></span> Label</div>\n- NEVER use underscores ____ \u2014 use <div class=\"line\"></div>\n- For habit/budget trackers: use <table class=\"ptable\"> with real rows\n- Each page must have 150+ words worth of HTML content\n- Escape ALL double quotes inside html_content as \\\"\n- title must use & maximum ONE time only\n- Return ONLY JSON, nothing else"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "model": {
+                            "label": "GPT-5 nanoThe most cost-effective option for casual conversation and straightforward, simple fact-retrieval"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "gpt-5.5",
+                                "gpt-5.4-nano",
+                                "gpt-5.4-mini",
+                                "gpt-5.4",
+                                "gpt-5.3-chat-latest",
+                                "gpt-5.2",
+                                "gpt-5.1",
+                                "gpt-5",
+                                "gpt-5-nano",
+                                "gpt-5-mini"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "textPrompt",
+                        "type": "text",
+                        "label": "Text prompt",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 38,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": 458947
+            },
+            "filter": null,
+            "mapper": {
+                "json": "{{30.result}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "My data structure   ok automation"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "help": "",
+                        "name": "title",
+                        "type": "text",
+                        "label": null,
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "description",
+                        "type": "text",
+                        "label": null,
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "preview_prompts",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Value",
+                            "default": null,
+                            "required": false,
+                            "multiline": false
+                        },
+                        "type": "array",
+                        "label": null,
+                        "required": false
+                    },
+                    {
+                        "help": "",
+                        "name": "interior_pages",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "page_name",
+                                    "label": "Page name",
+                                    "type": "text",
+                                    "required": false,
+                                    "multiline": false
+                                },
+                                {
+                                    "name": "html_content",
+                                    "label": "Html content",
+                                    "type": "text",
+                                    "required": false,
+                                    "multiline": true
+                                }
+                            ],
+                            "type": "collection",
+                            "required": false
+                        },
+                        "type": "array",
+                        "label": null,
+                        "required": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": 36,
+            "module": "etsy:createListing",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 7453839
+            },
+            "mapper": {
+                "type": "download",
+                "price": "499",
+                "title": "{{replace(38.title; \"&\"; \"and\")}}",
+                "quantity": "599",
+                "who_made": "i_did",
+                "when_made": "2020_2026",
+                "description": "{{38.description}}",
+                "taxonomy_id": 66
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "tags": {
+                            "mode": "chose"
+                        },
+                        "type": {
+                            "mode": "chose",
+                            "label": "Download"
+                        },
+                        "styles": {
+                            "mode": "chose"
+                        },
+                        "who_made": {
+                            "mode": "chose",
+                            "label": "I did"
+                        },
+                        "image_ids": {
+                            "mode": "chose"
+                        },
+                        "is_supply": {
+                            "mode": "chose"
+                        },
+                        "materials": {
+                            "mode": "chose"
+                        },
+                        "when_made": {
+                            "mode": "chose",
+                            "label": "2020~2026"
+                        },
+                        "is_taxable": {
+                            "mode": "chose"
+                        },
+                        "taxonomy_id": {
+                            "mode": "chose",
+                            "label": "Art & Collectibles"
+                        },
+                        "is_customizable": {
+                            "mode": "chose"
+                        },
+                        "shop_section_id": {
+                            "mode": "chose"
+                        },
+                        "item_weight_unit": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "is_personalizable": {
+                            "mode": "chose"
+                        },
+                        "should_auto_renew": {
+                            "mode": "chose"
+                        },
+                        "readiness_state_id": {
+                            "mode": "chose"
+                        },
+                        "item_dimensions_unit": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "production_partner_ids": {
+                            "mode": "chose"
+                        },
+                        "personalization_is_required": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "etsy3"
+                            },
+                            "label": "My Etsy connection (OmbrixStudio)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:etsy3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "Title",
+                        "required": true
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description",
+                        "required": true
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "uinteger",
+                        "label": "Quantity",
+                        "required": true
+                    },
+                    {
+                        "name": "price",
+                        "type": "number",
+                        "label": "Price",
+                        "required": true
+                    },
+                    {
+                        "name": "who_made",
+                        "type": "select",
+                        "label": "Who Made This Listing",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "i_did",
+                                "collective",
+                                "someone_else"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "when_made",
+                        "type": "select",
+                        "label": "When Was the Item Made",
+                        "required": true
+                    },
+                    {
+                        "name": "taxonomy_id",
+                        "type": "select",
+                        "label": "Taxonomy",
+                        "required": true
+                    },
+                    {
+                        "name": "type",
+                        "type": "select",
+                        "label": "Type",
+                        "validate": {
+                            "enum": [
+                                "physical",
+                                "download",
+                                "both"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "readiness_state_id",
+                        "type": "select",
+                        "label": "Readiness State ID"
+                    },
+                    {
+                        "name": "materials",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Material"
+                        },
+                        "type": "array",
+                        "label": "Materials"
+                    },
+                    {
+                        "name": "shop_section_id",
+                        "type": "select",
+                        "label": "Shop Section ID"
+                    },
+                    {
+                        "name": "processing_min",
+                        "type": "uinteger",
+                        "label": "Minimum Processing Days"
+                    },
+                    {
+                        "name": "processing_max",
+                        "type": "uinteger",
+                        "label": "Maximum Processing Days"
+                    },
+                    {
+                        "name": "tags",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Tag"
+                        },
+                        "type": "array",
+                        "label": "Tags"
+                    },
+                    {
+                        "name": "styles",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Style"
+                        },
+                        "type": "array",
+                        "label": "Styles"
+                    },
+                    {
+                        "name": "item_weight",
+                        "type": "number",
+                        "label": "Item Weight"
+                    },
+                    {
+                        "name": "item_length",
+                        "type": "number",
+                        "label": "Item Length"
+                    },
+                    {
+                        "name": "item_width",
+                        "type": "number",
+                        "label": "Item Width"
+                    },
+                    {
+                        "name": "item_height",
+                        "type": "number",
+                        "label": "Item Height"
+                    },
+                    {
+                        "name": "item_weight_unit",
+                        "type": "select",
+                        "label": "Item Weight Unit",
+                        "validate": {
+                            "enum": [
+                                "oz",
+                                "lb",
+                                "g",
+                                "kg"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "item_dimensions_unit",
+                        "type": "select",
+                        "label": "Item Dimension Unit",
+                        "validate": {
+                            "enum": [
+                                "in",
+                                "ft",
+                                "mm",
+                                "cm",
+                                "m",
+                                "yd"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "is_personalizable",
+                        "type": "boolean",
+                        "label": "Is Personalizable"
+                    },
+                    {
+                        "name": "personalization_is_required",
+                        "type": "boolean",
+                        "label": "Personalization is Required (Deprecated)"
+                    },
+                    {
+                        "name": "personalization_char_count_max",
+                        "type": "uinteger",
+                        "label": "Personalization Char Count Maximum (Deprecated)"
+                    },
+                    {
+                        "name": "personalization_instructions",
+                        "type": "text",
+                        "label": "Personalization Instructions (Deprecated)"
+                    },
+                    {
+                        "name": "production_partner_ids",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Production Partner ID"
+                        },
+                        "type": "array",
+                        "label": "Production Partner IDs"
+                    },
+                    {
+                        "name": "image_ids",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Image ID"
+                        },
+                        "type": "array",
+                        "label": "Image IDs",
+                        "validate": {
+                            "maxItems": 10
+                        }
+                    },
+                    {
+                        "name": "is_supply",
+                        "type": "boolean",
+                        "label": "Is Supply"
+                    },
+                    {
+                        "name": "is_customizable",
+                        "type": "boolean",
+                        "label": "Is Customizable"
+                    },
+                    {
+                        "name": "should_auto_renew",
+                        "type": "boolean",
+                        "label": "Should Auto Renew"
+                    },
+                    {
+                        "name": "is_taxable",
+                        "type": "boolean",
+                        "label": "Is Taxable"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 87,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "filter": null,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 39,
+                            "module": "builtin:BasicFeeder",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "array": "{{38.preview_prompts}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "array": {
+                                            "mode": "edit"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "mode": "edit",
+                                        "name": "array",
+                                        "spec": [],
+                                        "type": "array",
+                                        "label": "Array"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 92,
+                            "module": "http:MakeRequest",
+                            "version": 4,
+                            "parameters": {
+                                "authenticationType": "noAuth",
+                                "tlsType": ""
+                            },
+                            "mapper": {
+                                "url": "https://api.meshapi.ai/v1/images/generations",
+                                "method": "post",
+                                "headers": [
+                                    {
+                                        "name": "Authorization",
+                                        "value": "Bearer  rsk_01KWY3GPEASP1PN49FEJBAVY88"
+                                    },
+                                    {
+                                        "name": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "contentType": "json",
+                                "parseResponse": true,
+                                "stopOnHttpError": true,
+                                "allowRedirects": true,
+                                "shareCookies": false,
+                                "requestCompressedContent": true,
+                                "inputMethod": "jsonString",
+                                "jsonStringBodyContent": "{\"model\":\"openai/gpt-image-1.5\",\"prompt\":\"{{39.value}}, ultra high quality product photography, professional studio lighting, 8k resolution, sharp focus, luxury brand aesthetic, photorealistic\",\"size\":\"1024x1024\",\"quality\":\"high\",\"n\":1,\"response_format\":\"b64_json\"}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "authenticationType": {
+                                            "label": "No authenticationUse when no credentials are required for the request."
+                                        },
+                                        "tlsType": {
+                                            "label": "Empty"
+                                        }
+                                    },
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null,
+                                                null
+                                            ]
+                                        },
+                                        "queryParameters": {
+                                            "mode": "chose"
+                                        },
+                                        "contentType": {
+                                            "label": "application/jsonEnter data in the JSON format, as a string or using a data structure."
+                                        },
+                                        "parseResponse": {
+                                            "mode": "chose"
+                                        },
+                                        "stopOnHttpError": {
+                                            "mode": "chose"
+                                        },
+                                        "allowRedirects": {
+                                            "mode": "chose"
+                                        },
+                                        "shareCookies": {
+                                            "mode": "chose"
+                                        },
+                                        "requestCompressedContent": {
+                                            "mode": "chose"
+                                        },
+                                        "inputMethod": {
+                                            "label": "JSON stringEnter the JSON body as a raw text string. If values contain JSON reserved characters, you must escape them manually."
+                                        },
+                                        "paginationType": {
+                                            "label": "Empty"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "authenticationType",
+                                        "type": "select",
+                                        "label": "Authentication type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "noAuth",
+                                                "apiKey",
+                                                "basicAuth",
+                                                "oAuth"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "tlsType",
+                                        "type": "select",
+                                        "label": "Transport layer security (TLS)",
+                                        "validate": {
+                                            "enum": [
+                                                "mTls",
+                                                "tls"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "proxyKeychain",
+                                        "type": "keychain:proxy",
+                                        "label": "Proxy"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "type": "array",
+                                        "label": "Headers",
+                                        "spec": {
+                                            "name": "value",
+                                            "label": "Header",
+                                            "type": "collection",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "label": "Name",
+                                                    "type": "text",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "label": "Value",
+                                                    "type": "text"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "queryParameters",
+                                        "type": "array",
+                                        "label": "Query parameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "label": "Parameter",
+                                            "type": "collection",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "label": "Name",
+                                                    "type": "text",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "label": "Value",
+                                                    "type": "text"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Body content type",
+                                        "validate": {
+                                            "enum": [
+                                                "json",
+                                                "multipart",
+                                                "urlEncoded",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "stopOnHttpError",
+                                        "type": "boolean",
+                                        "label": "Return error if HTTP request fails",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "timeout",
+                                        "type": "uinteger",
+                                        "label": "Timeout",
+                                        "validate": {
+                                            "min": 1,
+                                            "max": 300
+                                        }
+                                    },
+                                    {
+                                        "name": "allowRedirects",
+                                        "type": "boolean",
+                                        "label": "Allow redirects",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "shareCookies",
+                                        "type": "boolean",
+                                        "label": "Share cookies with other HTTP modules",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "requestCompressedContent",
+                                        "type": "boolean",
+                                        "label": "Request compressed content",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "inputMethod",
+                                        "type": "select",
+                                        "label": "Body input method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "dataStructure",
+                                                "jsonString"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "jsonStringBodyContent",
+                                        "type": "text",
+                                        "label": "Body content",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "paginationType",
+                                        "type": "select",
+                                        "label": "Pagination type",
+                                        "validate": {
+                                            "enum": [
+                                                "offsetBased",
+                                                "pageBased",
+                                                "urlBased",
+                                                "tokenBased"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "data",
+                                        "label": "Data",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "statusCode",
+                                        "label": "Status Code",
+                                        "type": "number"
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "label": "Headers",
+                                        "type": "collection",
+                                        "spec": [
+                                            {
+                                                "name": "content-length",
+                                                "label": "Content-Length",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "name": "content-encoding",
+                                                "label": "Content-Encoding",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "name": "content-type",
+                                                "label": "Content-Type",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "name": "server",
+                                                "label": "Server",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "name": "cache-control",
+                                                "label": "Cache-Control",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "name": "set-cookie",
+                                                "label": "Set-Cookie",
+                                                "type": "array",
+                                                "spec": {
+                                                    "type": "text"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "module": "dropbox:uploadLargeFile",
+                            "version": 5,
+                            "parameters": {
+                                "__IMTCONN__": 7453877
+                            },
+                            "mapper": {
+                                "data": "{{toBinary(92.data[1].b64_json; \"base64\")}}",
+                                "path": "/EtsyAutomation",
+                                "filename": "{{36.title}}.png",
+                                "overwrite": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "path": {
+                                            "mode": "edit"
+                                        },
+                                        "overwrite": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "dropbox"
+                                            },
+                                            "label": "My Dropbox connection (aaradhyacolletion11@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:dropbox",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "path",
+                                        "type": "folder",
+                                        "label": "Folder",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "filename",
+                                        "type": "filename",
+                                        "label": "File Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "overwrite",
+                                        "type": "boolean",
+                                        "label": "Overwrite an existing file",
+                                        "required": true
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 32,
+                            "module": "etsy:uploadImage",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 7453839
+                            },
+                            "mapper": {
+                                "rank": "{{39.`__IMTINDEX__`}}",
+                                "fileData": "{{toBinary(92.data[1].b64_json; \"base64\")}}",
+                                "fileName": "{{36.title}}.png",
+                                "listing_id": "{{36.listing_id}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "overwrite": {
+                                            "mode": "chose"
+                                        },
+                                        "is_watermarked": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "etsy3"
+                                            },
+                                            "label": "My Etsy connection (OmbrixStudio)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:etsy3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "listing_id",
+                                        "type": "text",
+                                        "label": "Listing ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "fileName",
+                                        "type": "filename",
+                                        "label": "File Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "fileData",
+                                        "type": "buffer",
+                                        "label": "File Data",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "listing_image_id",
+                                        "type": "uinteger",
+                                        "label": "Listing Image ID"
+                                    },
+                                    {
+                                        "name": "rank",
+                                        "type": "uinteger",
+                                        "label": "Rank"
+                                    },
+                                    {
+                                        "name": "overwrite",
+                                        "type": "boolean",
+                                        "label": "Overwrite"
+                                    },
+                                    {
+                                        "name": "is_watermarked",
+                                        "type": "boolean",
+                                        "label": "Is Watermarked"
+                                    },
+                                    {
+                                        "name": "alt_text",
+                                        "type": "text",
+                                        "label": "Alternative Text"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 53,
+                            "module": "pdf-co:HTMLtoPDF",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 8141113
+                            },
+                            "mapper": {
+                                "name": "Self_Care_Planner.pdf",
+                                "async": 15000,
+                                "export": {
+                                    "exportType": "downloadFile"
+                                },
+                                "convert": {
+                                    "html": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<style>\n  @page { size: A4; margin: 0; }\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  body { font-family: 'Georgia', serif; background: #FAF7F0; color: #2B2B2B; }\n  .page { width: 210mm; min-height: 297mm; height: 297mm; padding: 16mm 18mm 14mm 18mm; page-break-after: always; overflow: hidden; background: #FAF7F0; position: relative; }\n  .page:last-child { page-break-after: auto; }\n  .page::before { content: \"\"; position: absolute; top: 8mm; left: 8mm; width: 12mm; height: 12mm; border-top: 1.5px solid #C9A227; border-left: 1.5px solid #C9A227; }\n  .page::after { content: \"\"; position: absolute; bottom: 8mm; right: 8mm; width: 12mm; height: 12mm; border-bottom: 1.5px solid #C9A227; border-right: 1.5px solid #C9A227; }\n  .page-header { text-align: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1.5px solid #C9A227; }\n  .eyebrow { font-size: 7px; letter-spacing: 4px; text-transform: uppercase; color: #C9A227; margin-bottom: 3px; font-family: Helvetica, sans-serif; }\n  .title { font-size: 18px; font-weight: normal; letter-spacing: 1px; color: #1A1A1A; }\n  .box { margin-bottom: 10px; border: 1px solid #D9CBA3; background: #FFFFFF; border-radius: 2px; }\n  .box-title { background: #1A1A1A; color: #D4AF37; padding: 6px 12px; font-size: 8.5px; text-transform: uppercase; letter-spacing: 1.5px; font-family: Helvetica, sans-serif; }\n  .box-body { padding: 10px 12px; font-size: 9.5px; line-height: 1.7; color: #333; }\n  .subhead { font-weight: bold; font-size: 8.5px; color: #C9A227; margin: 6px 0 3px 0; text-transform: uppercase; letter-spacing: 0.8px; font-family: Helvetica, sans-serif; }\n  .line { border-bottom: 0.75px solid #C9A98A; height: 20px; margin-bottom: 3px; width: 100%; display: block; }\n  .check { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; font-size: 9.5px; line-height: 1.4; }\n  .checkbox { display: inline-block; width: 10px; height: 10px; min-width: 10px; border: 1px solid #C9A227; background: white; }\n  .tag { display: inline-block; border: 1px solid #C9A227; color: #9C7A1E; padding: 1px 7px; font-size: 7.5px; letter-spacing: 0.5px; text-transform: uppercase; font-family: Helvetica, sans-serif; margin-right: 4px; }\n  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }\n  .col { min-width: 0; }\n  table.ptable { width: 100%; border-collapse: collapse; font-size: 8.5px; margin-top: 4px; font-family: Helvetica, sans-serif; }\n  table.ptable th { background: #1A1A1A; color: #D4AF37; padding: 5px 7px; text-align: left; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: normal; }\n  table.ptable td { border-bottom: 0.75px solid #E5DCC3; padding: 6px 7px; min-height: 18px; }\n  table.ptable tr:nth-child(even) td { background: #FBF8F0; }\n  .page-footer { position: absolute; bottom: 8mm; left: 18mm; right: 18mm; text-align: center; font-size: 7px; letter-spacing: 2px; color: #C9A227; text-transform: uppercase; font-family: Helvetica, sans-serif; }\n</style>\n</head>\n<body>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[1].page_name}}</div></div>\n  {{38.interior_pages[1].html_content}}\n  <div class=\"page-footer\">\u2014 01 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[2].page_name}}</div></div>\n  {{38.interior_pages[2].html_content}}\n  <div class=\"page-footer\">\u2014 02 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[3].page_name}}</div></div>\n  {{38.interior_pages[3].html_content}}\n  <div class=\"page-footer\">\u2014 03 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[4].page_name}}</div></div>\n  {{38.interior_pages[4].html_content}}\n  <div class=\"page-footer\">\u2014 04 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[5].page_name}}</div></div>\n  {{38.interior_pages[5].html_content}}\n  <div class=\"page-footer\">\u2014 05 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[6].page_name}}</div></div>\n  {{38.interior_pages[6].html_content}}\n  <div class=\"page-footer\">\u2014 06 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[7].page_name}}</div></div>\n  {{38.interior_pages[7].html_content}}\n  <div class=\"page-footer\">\u2014 07 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[8].page_name}}</div></div>\n  {{38.interior_pages[8].html_content}}\n  <div class=\"page-footer\">\u2014 08 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[9].page_name}}</div></div>\n  {{38.interior_pages[9].html_content}}\n  <div class=\"page-footer\">\u2014 09 \u2014</div>\n</div>\n<div class=\"page\">\n  <div class=\"page-header\"><div class=\"eyebrow\">Self Care Collection</div><div class=\"title\">{{38.interior_pages[10].page_name}}</div></div>\n  {{38.interior_pages[10].html_content}}\n  <div class=\"page-footer\">\u2014 10 \u2014</div>\n</div>\n</body>\n</html>",
+                                    "convertType": "fromHtml"
+                                },
+                                "paperSize": "a4",
+                                "expiration": "60",
+                                "orientation": "portrait",
+                                "printBackground": true,
+                                "doNotWaitFullLoad": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "async": {
+                                            "mode": "chose",
+                                            "label": "Async"
+                                        },
+                                        "export": {
+                                            "nested": {
+                                                "exportType": {
+                                                    "label": "Download a File"
+                                                }
+                                            }
+                                        },
+                                        "convert": {
+                                            "nested": {
+                                                "convertType": {
+                                                    "label": "HTML to PDF"
+                                                }
+                                            }
+                                        },
+                                        "paperSize": {
+                                            "label": "A4"
+                                        },
+                                        "orientation": {
+                                            "label": "Portrait"
+                                        },
+                                        "printBackground": {
+                                            "mode": "chose"
+                                        },
+                                        "doNotWaitFullLoad": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "pdf-co"
+                                            },
+                                            "label": "My PDF.co connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:pdf-co",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "convert",
+                                        "spec": [
+                                            {
+                                                "name": "convertType",
+                                                "type": "select",
+                                                "label": "Convert Type",
+                                                "required": true,
+                                                "validate": {
+                                                    "enum": [
+                                                        "fromHtml",
+                                                        "fromHtmlTemplate",
+                                                        "fromWebsite"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name": "html",
+                                                "type": "text",
+                                                "label": "Input HTML Code",
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Convert Options",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Output File Name"
+                                    },
+                                    {
+                                        "name": "orientation",
+                                        "type": "select",
+                                        "label": "Orientation",
+                                        "validate": {
+                                            "enum": [
+                                                "portrait",
+                                                "landscape"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "paperSize",
+                                        "type": "select",
+                                        "label": "Paper Size ",
+                                        "validate": {
+                                            "enum": [
+                                                "a0",
+                                                "a1",
+                                                "a2",
+                                                "a3",
+                                                "a4",
+                                                "a5",
+                                                "a6",
+                                                "legal",
+                                                "letter",
+                                                "tabloid",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "printBackground",
+                                        "type": "boolean",
+                                        "label": "Render Page Background"
+                                    },
+                                    {
+                                        "name": "doNotWaitFullLoad",
+                                        "type": "boolean",
+                                        "label": "Do not wait for full load"
+                                    },
+                                    {
+                                        "name": "margins",
+                                        "type": "text",
+                                        "label": "Margins"
+                                    },
+                                    {
+                                        "name": "async",
+                                        "type": "select",
+                                        "label": "Execution Mode",
+                                        "validate": {
+                                            "enum": [
+                                                false,
+                                                15000,
+                                                "asyncCheckLater"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "profiles",
+                                        "type": "text",
+                                        "label": "Profiles"
+                                    },
+                                    {
+                                        "name": "expiration",
+                                        "type": "number",
+                                        "label": "Output Links Expiration"
+                                    },
+                                    {
+                                        "name": "export",
+                                        "spec": [
+                                            {
+                                                "name": "exportType",
+                                                "type": "select",
+                                                "label": "Export Type",
+                                                "required": true,
+                                                "validate": {
+                                                    "enum": [
+                                                        "downloadFile",
+                                                        "inline"
+                                                    ]
+                                                }
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Export Options",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 70,
+                            "module": "http:DownloadFile",
+                            "version": 4,
+                            "parameters": {
+                                "authenticationType": "noAuth"
+                            },
+                            "mapper": {
+                                "url": "{{53.url}}",
+                                "shareCookies": false,
+                                "stopOnHttpError": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "shareCookies": {
+                                            "mode": "chose"
+                                        },
+                                        "queryParameters": {
+                                            "mode": "chose"
+                                        },
+                                        "stopOnHttpError": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "authenticationType": {
+                                            "label": "No authenticationUse when no credentials are required for the request."
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "authenticationType",
+                                        "type": "select",
+                                        "label": "Authentication type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "noAuth",
+                                                "apiKey",
+                                                "basicAuth",
+                                                "oAuth"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "stopOnHttpError",
+                                        "type": "boolean",
+                                        "label": "Return error if HTTP request fails",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "shareCookies",
+                                        "type": "boolean",
+                                        "label": "Share cookies with other HTTP modules",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Header"
+                                        },
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "queryParameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Parameter"
+                                        },
+                                        "type": "array",
+                                        "label": "Query parameters"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 71,
+                            "module": "dropbox:uploadLargeFile",
+                            "version": 5,
+                            "parameters": {
+                                "__IMTCONN__": 7453877
+                            },
+                            "mapper": {
+                                "data": "{{70.data}}",
+                                "path": "/EtsyAutomation",
+                                "filename": "Self_Care_Planner.pdf",
+                                "overwrite": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "path": {
+                                            "mode": "chose"
+                                        },
+                                        "overwrite": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "dropbox"
+                                            },
+                                            "label": "My Dropbox connection (aaradhyacolletion11@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:dropbox",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "path",
+                                        "type": "folder",
+                                        "label": "Folder",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "filename",
+                                        "type": "filename",
+                                        "label": "File Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "overwrite",
+                                        "type": "boolean",
+                                        "label": "Overwrite an existing file",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 76,
+                            "module": "etsy:universal",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 7453839
+                            },
+                            "mapper": {
+                                "url": "/shops/{{36.shop_id}}/listings/{{36.listing_id}}/files",
+                                "fields": [
+                                    {
+                                        "key": "file",
+                                        "fileData": "{{70.data}}",
+                                        "fileName": "{{70.fileName}}",
+                                        "fieldType": "file"
+                                    },
+                                    {
+                                        "key": "name",
+                                        "value": "Self_Care_Planner.pdf",
+                                        "fieldType": "text"
+                                    }
+                                ],
+                                "method": "POST",
+                                "headers": [
+                                    {}
+                                ],
+                                "bodyType": "multipart/form-data"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "qs": {
+                                            "mode": "chose"
+                                        },
+                                        "fields": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "fieldType": {
+                                                        "mode": "edit"
+                                                    }
+                                                },
+                                                {
+                                                    "fieldType": {
+                                                        "mode": "edit"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bodyType": {
+                                            "mode": "chose",
+                                            "label": "Multipart/form-data"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "etsy3"
+                                            },
+                                            "label": "My Etsy connection (OmbrixStudio)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:etsy3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "text",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "GET",
+                                                "POST",
+                                                "PUT",
+                                                "PATCH",
+                                                "DELETE"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "text",
+                                                "label": "Key"
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "qs",
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "type": "text",
+                                                "label": "Key"
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Value"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Query String"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body Type",
+                                        "validate": {
+                                            "enum": [
+                                                "raw",
+                                                "multipart/form-data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "fields",
+                                        "spec": [
+                                            {
+                                                "name": "fieldType",
+                                                "type": "select",
+                                                "label": "Field Type",
+                                                "options": [
+                                                    {
+                                                        "label": "Text",
+                                                        "value": "text",
+                                                        "nested": [
+                                                            {
+                                                                "name": "key",
+                                                                "type": "text",
+                                                                "label": "Key"
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "text",
+                                                                "label": "Value"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "label": "File",
+                                                        "value": "file",
+                                                        "nested": [
+                                                            {
+                                                                "name": "key",
+                                                                "type": "text",
+                                                                "label": "Key"
+                                                            },
+                                                            {
+                                                                "name": "fileName",
+                                                                "type": "filename",
+                                                                "label": "File Name",
+                                                                "semantic": "file:name"
+                                                            },
+                                                            {
+                                                                "name": "fileData",
+                                                                "type": "buffer",
+                                                                "label": "File Data",
+                                                                "semantic": "file:data"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Fields"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}
